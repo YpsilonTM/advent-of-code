@@ -1,4 +1,4 @@
-import fs from 'fs'
+import { readFileSync } from 'fs'
 
 function part1(input: string) {
   const lines = input.split('\r\n')
@@ -20,7 +20,7 @@ function part1(input: string) {
 }
 
 function part2(path: string) {
-  const input = fs.readFileSync(path, 'utf-8')
+  const input = readFileSync(path, 'utf-8')
 
   const regex = /\d/g
   const dictionary = [/(one)/g, /(two)/g, /(three)/g, /(four)/g, /(five)/g, /(six)/g, /(seven)/g, /(eight)/g, /(nine)/g]
