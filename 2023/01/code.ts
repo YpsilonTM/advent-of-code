@@ -1,9 +1,5 @@
 import fs from 'fs'
 
-const input = fs.readFileSync('./2023/01/input.txt', 'utf-8')
-
-const textNumbersRegex = new RegExp(['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'].join('|'), 'g')
-
 function part1(input: string) {
   const lines = input.split('\r\n')
   const allDigitsRegex = /\d/g
@@ -23,35 +19,25 @@ function part1(input: string) {
   return matches
 }
 
-function part2(input: string) {
-  // get lines as array
-  const lines = input.split('\r\n')
+function part2(path: string) {
+  const input = fs.readFileSync(path, 'utf-8')
 
-  // replace text numbers with digits
-  const parsedLines = lines.map((line) => {
-    const parsedLine = line.replace(textNumbersRegex, (match) => {
-      const number = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'].indexOf(match) + 1
-      return number.toString()
-    })
-    return parsedLine
+  const regex = /\d/g
+  const dictionary = [/(one)/g, /(two)/g, /(three)/g, /(four)/g, /(five)/g, /(six)/g, /(seven)/g, /(eight)/g, /(nine)/g]
+
+  const lines = input.split('\n').map((line) => {
+    dictionary.map((dicExp, i) => (line = line.replace(dicExp, `$1${i + 1}$1`)))
+    return line
   })
 
-  // get all digits
-  const allDigitsRegex = /\d/g
-  const matches = parsedLines
-    .map((line) => {
-      const digits = line.match(allDigitsRegex)
-      if (!digits) return 0
-      const first = digits?.[0]
-      const last = digits?.[digits.length - 1]
-      return Number(first + last) || 0
-    })
-    .filter((value) => value)
-    .reduce((acc, value) => {
-      return acc + value
-    }, 0)
+  const solution = lines.reduce((acc, curr) => {
+    const matchs = curr.match(regex) ?? ['0']
+    const number = (matchs.at(0) ?? '') + (matchs.at(-1) ?? '')
+    return acc + +number
+  }, 0)
 
-  return matches
+  return solution
 }
 
-console.log(part2(input))
+console.log(part2('./2023/01/example.txt'))
+console.log(part2('./2023/01/input.txt'))
