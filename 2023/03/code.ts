@@ -10,17 +10,32 @@ function isSymbol(char: string) {
   return regex.test(char)
 }
 
-function hasNumberAdjacent(grid: string[][], x: number, y: number) {
-  const adjacent = [grid[y - 1]?.[x - 1], grid[y - 1]?.[x], grid[y - 1]?.[x + 1], grid[y]?.[x - 1], grid[y]?.[x + 1], grid[y + 1]?.[x - 1], grid[y + 1]?.[x], grid[y + 1]?.[x + 1]]
-  const hasNumberAdjacant = adjacent.some((cell) => isCharNumber(cell))
-  return hasNumberAdjacant
-}
+function hasSymbolAdjacant(grid: string[][], x: number, y: number) {
+  // All adjacent positions also diagonal ones
+  const adjacentPositions = [
+    [x - 1, y - 1],
+    [x, y - 1],
+    [x + 1, y - 1],
+    [x - 1, y],
+    [x + 1, y],
+    [x - 1, y + 1],
+    [x, y + 1],
+    [x + 1, y + 1],
+  ]
 
-function getAllFullNumbersAdjacent(grid: string[][], x: number, y: number) {
-  let number: any[] = []
-  const adjacent = [grid[y - 1]?.[x - 1], grid[y - 1]?.[x], grid[y - 1]?.[x + 1], grid[y]?.[x - 1], grid[y]?.[x + 1], grid[y + 1]?.[x - 1], grid[y + 1]?.[x], grid[y + 1]?.[x + 1]]
-  adjacent.forEach((cell) => {})
-  return number
+  for (const [x, y] of adjacentPositions) {
+    // Out of bounds y
+    if (y < 0 || y >= grid.length) {
+      continue
+    }
+    // Out of bounds x
+    if (x < 0 || x >= grid[y].length) {
+      continue
+    }
+    if (grid[y] && grid[y][x] && isSymbol(grid[y][x])) {
+      return true
+    }
+  }
 }
 
 function part1(path: string) {
@@ -35,8 +50,28 @@ function part1(path: string) {
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
       const current = grid[y][x]
-      if (isSymbol(current) && hasNumberAdjacent(grid, x, y)) {
-        console.log(getAllFullNumbersAdjacent(grid, x, y))
+      if (isCharNumber(current)) {
+        let number = current
+        let hasAnAdjectantSymbol = false
+
+        if (hasSymbolAdjacant(grid, x, y)) {
+          hasAnAdjectantSymbol = true
+        }
+
+        while (isCharNumber(grid[y][x + 1])) {
+          number += grid[y][x + 1]
+          if (hasSymbolAdjacant(grid, x + 1, y)) {
+            hasAnAdjectantSymbol = true
+          }
+          x++
+        }
+
+        console.log(parseInt(number))
+        console.log(hasAnAdjectantSymbol)
+
+        if (hasAnAdjectantSymbol) {
+          sum += parseInt(number)
+        }
       }
     }
   }
@@ -45,3 +80,4 @@ function part1(path: string) {
 }
 
 console.log(part1('./2023/03/example.txt'))
+console.log(part1('./2023/03/input.txt'))
