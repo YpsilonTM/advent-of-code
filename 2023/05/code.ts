@@ -1,27 +1,18 @@
 import { readFileSync } from 'fs'
 
-const input = readFileSync('./2023/05/example.txt', 'utf-8')
+const input = readFileSync('./example.txt', 'utf-8')
 
-type Mapping = { [key: number]: number }
-
-function parseMapping(line: string): Mapping {
-  const mapping: Mapping = {}
-  const linesplit = line.trim().split(' ')
-
-  if (linesplit[1] === 'map:') {
-    console.log(linesplit)
-  }
-  return mapping
-}
-
+// get everything on the line with'seeds:
 const seeds = input
-  .split('\n')[0]
+  .match(/seeds: (.*)/)?.[1]
   .split(' ')
   .map(Number)
-  .filter((val) => val)
 
-const mappings = input.split('\n').slice(1).map(parseMapping)
+// Get all the lines after seed-to-soil map: until the first empty line
+const soilMap = input
+  .trim()
+  .replace('\r', '')
+  .match(/seed-to-soil map:\n(.*?)\n\n/gm)?.[1]
+  .split('\n')
 
-// Find the minimum location
-// const minLocation = findMinLocation(seeds, mappings)
-console.log(mappings)
+console.log(soilMap)
