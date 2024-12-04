@@ -68,7 +68,29 @@ function part1() {
     return count
 }
 
-function part2() {}
+// TODO: Complete part 2, currently not working
+function part2() {
+    let count = 0
+
+    grid.forEach((row, y) => {
+        row.forEach((cell, x) => {
+            if (cell === 'A') {
+                const diagonal1 = [getDirection(grid, x, y, 'upleft'), cell, getDirection(grid, x, y, 'downright')].join('')
+                const diagonal2 = [getDirection(grid, x, y, 'upright'), cell, getDirection(grid, x, y, 'downleft')].join('')
+
+                const diagonal1Count = diagonal1 === 'MAS' || diagonal1 === 'SAM'
+                const diagonal2Count = diagonal2 === 'MAS' || diagonal2 === 'SAM'
+
+                if (diagonal1Count && diagonal2Count) {
+                    count++
+                    console.log({ x, y, diagonal1, diagonal2 })
+                }
+            }
+        })
+    })
+
+    return count
+}
 
 console.log('Part 1:', part1())
 console.log('Part 2:', part2())
