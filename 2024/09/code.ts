@@ -3,18 +3,20 @@ import { join } from 'path'
 
 const data = readFileSync(join(__dirname, 'input.txt'), { encoding: 'utf-8', flag: 'r' })
 
-function part1() {
+function getDataArray() {
   const diskdata = data.match(/.{1,2}/g)?.map((set, i) => ({
     diskId: i,
     size: Number(set[0]) || 0,
     free: Number(set[1]) || 0,
   }))
 
-  if (!diskdata) return
+  return diskdata?.flatMap((disk) => [...Array(disk.size).fill(disk.diskId), ...Array(disk.free).fill(null)]) || []
+}
 
-  const dataArray = diskdata.flatMap((disk) => [...Array(disk.size).fill(disk.diskId), ...Array(disk.free).fill(null)])
+function part1() {
+  const dataArray = getDataArray()
 
-  console.log('dataArray before sort:', dataArray)
+  console.log(dataArray)
 
   for (let i = 0; i < dataArray.length; i++) {
     if (dataArray[i] === null) {
@@ -28,11 +30,7 @@ function part1() {
     }
   }
 
-  console.log('dataArray after sort:', dataArray)
-
-  const finalSum = dataArray.reduce((acc, val, i) => (val === null ? acc : acc + i * Number(val)), 0)
-
-  return finalSum
+  return dataArray.reduce((acc, val, i) => (val === null ? acc : acc + i * Number(val)), 0)
 }
 
 function part2() {}
